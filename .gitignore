@@ -1,0 +1,6 @@
+
+vendor/autoload.php
+composer.lock
+vendor/*
+keys/saltibot-3472f-firebase-adminsdk-mcnv3-dc9c033070.json
+.htaccess
