@@ -1,0 +1,10 @@
++ hola
+- ¡Hola ! Soy Tu Asistente Virtual de El Municipio de Saltillo, será un placer atenderte si tienes una emergencia 🚓 🚑 marca inmediatamente al 911
+- \nReportes\nConsulta de Reporte\nInfo de servicios\nTrámites\nMenu\n
+
++ (reportes|Reportes) *
+- Que asunto te gustaría reportar
+- \nLuminarias \nLimpieza de plazas \nBacheo \nRecoleción de basura \nReporte vial \nControl Canino \nOtros \nSalir
+
++ (Luminarias|luminarias|lampara|Lampara|lámpara|Lámpara)
+- Ingresar el número de luminaria que comienza con SAL y se encuentra en una etiqueta a mediación de poste ejemplo SAL23456, si no lo tienes a la mano solo escribe No
