@@ -1,10 +1,7 @@
 {
     "require": {
         "kreait/firebase-php": "^5.26",
-        "google/cloud-firestore": "^1.35",        
-        "botman/driver-facebook": "^1.11",
-        "botman/botman": "^2.8",
-        "irwan-runtuwene/driver-whatsapp": "^0.0.2",
+        "google/cloud-firestore": "^1.35",
         "yooper/php-text-analysis": "^1.9"
     }
 }
