@@ -7,8 +7,10 @@
 </head>
 <body>
     <form action="ia.php" method="GET">
-        <input type="text" autocomplete='none' name='text' id='text'>
-        <button type="submit" value="send">Send</button>
+        <div style="width: 50%;position: relative;margin: 0 auto;">
+            <input type="text" autocomplete='none' name='text' id='text' style="width: 100%;display: block;clear: both;">
+            <button type="submit" value="send">Send</button>
+        <div>
     </form>
 </body>
 </html>
@@ -24,67 +26,166 @@ define('FBTOKEN', getenv('FB_TOKEN'));
 define('APPSECRET', getenv('APPSECRET'));
 define('SECRETTOKEN', getenv('SECRETTOKEN'));
 
-$text=$_GET['text'];
+function weigh_up($item){
+    return $item > 0.122;
+}
+
+$prepociciones = array(' a ',' ante ',' bajo ',' con ',' contra ',' de ',' desde ',' durante ',' en ',' entre ',' hacia ',' hasta ',' mediante ',' para ',' por ',' segun ',' sin ',' so ',' sobre ',' tras ',' versus ',' via ');
+$words = array(' me ',' gustaria', ' gustaría ',' quiero ',' para ', ' una ',' que ',' la ',' el '. ' los ', ' un ');
+$text=' '.$_GET['text'];
+
+echo '<br>'.$text;
+$text = str_replace($prepociciones,' ',$text);
+$text = str_replace($words,' ',$text);
+echo '<br>'.$text;
 $items = (object)array(
-    'saludo'=> [
+    'saludo'=> (object)[
         "tokens"=> ('saludos hola buenos dias buenas tardes noches como estas estás cómo'),
-        "response" => ' Hola !!'
+        "response_single" => '! Soy Tu Asistente Virtual de El Municipio de Saltillo, será un placer atenderte si tienes una emergencia 🚓 🚑 marca inmediatamente al 911'.
+        '<br>Elige la opción de tu preferencia, Reportes, Consulta de Reporte, Info de servicios, Trámites '.
+        '<br>Puedes escribir "Salir" en cualquier momento...',
+        'response_multiple' => ' Hola !',        
+        'type' => 'inclusive'
     ],
-    'reporte'=> [
-        "tokens"=> ('reporte reportar queja'),
-        "response" => ' Qué quieres reportar ?'
+    'reporte'=> (object)[
+        "tokens"=> ('reporte reportar reportes levantar dar alta'),
+        "response_single" => ' Que asunto te gustaría reportar, "Luminarias", "Limpieza de plazas", "Bacheo", "Recoleción de basura", "Reporte vial", "Control Canino", "Otros"',
+        'response_multiple' => 'escuchando tu reporte, ',
+        'type' => 'inclusive_silent'
+        
     ],
-    'status_reporte'=> [
+    'status_reporte'=> (object)[
         "tokens"=> ('hice reporte levante status estatus numero número'),
-        "response" => ' Revisando tu reporte'
+        "response_single" => ' Comparteme tu Folio de reporte, (\"Ejemplo : 301234\").con gusto te daremos el estado en que se encuentra',
+        'response_multiple' => 'Revisando tu reporte con folio ',
+        'type' => 'exclusive'
+        
     ],
-    'luminaria'=> [
-        "tokens"=> ('luminaria faro lampara apagada enciende'),
-        "response" => 'Puedes proporcionarnos el número de luminaria'
+    'luminaria'=> (object)[
+        "tokens"=> ('luminaria faro lampara apagada enciende fundida luminarias'),
+        "response_single" => 'Ingresar el número de luminaria que comienza con SAL y se encuentra en una etiqueta a mediación de poste ejemplo SAL23456, si no lo tienes a la mano solo escribe \"No\"',
+        'response_multiple' => 'Puedes proporcionarnos el número de luminaria ',
+        'type' => 'inclusive'
+        
     ],
-    'plazas'=> [
-        "tokens"=> ('plaza'),
-        "response" => ' gracias por tu reporte'
+    /* 'numero_luminaria'=> (object)[
+        "tokens"=> ('luminaria numero número luminaria lampara'),
+        "response_single" => '¿puedes explicarme el problema? (escribe de que se trata el reporte)',
+        'response_multiple' => '¿puedes explicarme el problema? (escribe de que se trata el reporte) ',
+        'type' => 'inclusive'
+        
+    ], */
+    'plazas'=> (object)[
+        "tokens"=> ('plaza Limpieza de plazas'),
+        "response_single" => ' gracias por tu reporte',
+        'response_multiple' => '',
+        'type' => 'inclusive'
+        
     ],
-    'bacheo'=> [
+    'bacheo'=> (object)[
         "tokens"=> ('baches pozos bache bacheo hoyos oyos'),
-        "response" => ' gracias por tu reporte'
+        "response_single" => ' gracias por tu reporte',
+        'response_multiple' => '',
+        'type' => 'inclusive'
+        
     ],
-    'basura'=> [
-        "tokens"=> ('basura camión de basura bolsas bolsa'),
-        "response" => ' gracias por tu reporte'
+    'basura'=> (object)[
+        "tokens"=> ('basura camión de basura bolsas bolsa recolección recoleccion '),
+        "response_single" => ' gracias por tu reporte',
+        'response_multiple' => '',
+        'type' => 'inclusive'
+        
     ],
-    'vial'=> [
+    'vial'=> (object)[
         "tokens"=> ('vial validad choque accidente'),
-        "response" => ' gracias por tu reporte'
+        "response_single" => ' gracias por tu reporte',
+        'response_multiple' => '',
+        'type' => 'inclusive'
+        
     ],
-    'canino'=> [
-        "tokens"=> ('perro perros canino rabia sueltos callejeros'),
-        "response" => ' gracias por tu reporte'
+    'canino'=> (object)[
+        "tokens"=> ('perro perros canino rabia sueltos callejeros control'),
+        "response_single" => ' gracias por tu reporte',
+        'response_multiple' => '',
+        'type' => 'inclusive'
+        
     ],
-    'info'=> [
+    'info'=> (object)[
         "tokens"=> ('información informacion servicios info'),
-        "response" => ' gracias por tu reporte'
+        "response_single" => ' gracias por tu reporte',
+        'response_multiple' => '',
+        'type' => 'inclusive'
+        
     ],
-    'tramites'=> [
+    'tramites'=> (object)[
         "tokens"=> ('trámites tramites'),
-        "response" => ' gracias por tu reporte'
+        "response_single" => ' gracias por tu reporte',
+        'response_multiple' => '',
+        'type' => 'inclusive'
+        
     ],
-    'numero de reporte'=> [
+    'numero de reporte'=> (object)[
         "tokens"=> ('reporte numero número'),
-        "response" => ' gracias por tu reporte'
+        "response_single" => ' gracias por tu reporte',
+        'response_multiple' => '',
+        'type' => 'inclusive'
+        
     ],
-    'direccion'=> [
+    'direccion'=> (object)[
         "tokens"=> ('direccion dirección calle blvd boulevard'),
-        "response" => ' gracias por tu reporte'
+        "response_single" => ' gracias por tu reporte',
+        'response_multiple' => '',
+        'type' => 'inclusive'
+        
     ],
-    'agrecion'=> [
+    'agrecion'=> (object)[
         "tokens"=> ('chinga tu madre pendejo idiota pendejos idiotas bola'),
-        "response" => ' gracias por tu reporte'
+        "response_single" => ' soy un robot con sentimientos...',
+        'response_multiple' => '',
+        'type' => 'exclusive'
+        
     ],
-    'agradecimiento'=> [
+    'agradecimiento'=> (object)[
         "tokens"=> ('muchas gracias'),
-        "response" => ' gracias por tu reporte'
+        "response_single" => ' gracias por tu reporte',
+        'response_multiple' => '',
+        'type' => 'inclusive'
+        
+    ],
+    'servicios'=> (object)[
+        "tokens"=> ('servicio servicios'),
+        "response_single" => ' ¿ De qué Servicio requieres Información? ',
+        'response_multiple' => '',
+        'type' => 'inclusive'
+        
+    ],
+    'recoleccion'=> (object)[
+        "tokens"=> ('servicio servicios'),
+        "response_single" => ' 😁  ¡Gracias por contactarnos!  Para brindarte la información necesaria. ¿Nos puedes proporcionar de que colonia desea saber el horario de Recolección? ',
+        'response_multiple' => '',
+        'type' => 'inclusive'
+        
+    ],
+    'facturacion'=> (object)[
+        "tokens"=> ('Facturación facturacion'),
+        "response_single" => ' Te Proporciono el siguiente enlace para Facturas Con Recibo \n✅ Impuesto Predial\n✅ ISAI ( Pago en linea)\n✅ Ingresos Varios\n✅ Sm@rt pago en línea\n ✅ Saneamiento-Aguas de Saltillo \n ✅ Caja 5 \n http://cfdi.saltillo.gob.mx:8888/CFDI/facturaConRecibo.php',
+        'response_multiple' => '',
+        'type' => 'exclusive'
+        
+    ],
+    'queja_ciudadana'=> (object)[
+        "tokens"=> ('queja ciudadana Queja ciudadana'),
+        "response_single" => ' ¿ De qué Servicio requieres Información? ',
+        'response_multiple' => '',
+        'type' => 'inclusive'
+        
+    ],
+    'negativa'=> (object)[
+        "tokens"=> ('no puedo imposible'),
+        "response_single" => ' puedes  ',
+        'response_multiple' => '',
+        'type' => 'helper'
+        
     ],
     
 );
@@ -98,28 +199,70 @@ echo '<pre>';
 foreach($items as $key => $item){
     /* echo '$key'.$key.'<br>';
     echo '$tokens'.$item['tokens'].'<br>'; */
-    $nb->train($key, tokenize($item['tokens']));
+    $nb->train($key, tokenize($item->tokens));
 }
 
 $weights= $nb->predict(tokenize($text)); 
+
 $keys = array_keys($weights);
-echo $text.'<br>';
+/* echo $text.'<br>';
 echo 'Respuesta =><br> ';
-echo $keys[0].'=>'.$weights[$keys[0]].'<br>';
+echo $keys[0].'=>'.$weights[$keys[0]].'<br>'; */
 
 if($keys[0]<0.000){
     echo '<br>-indefinido-<br>';
 }
-$isReport = false;
-$isSalute = false;
-foreach($weights as $key => $weight){
-    
-    if($weight>0.01){
-        echo '<br> '.$items[$key]->response;
-    }
-}
 
 var_dump($weights);
+
+$isReport = false;
+$isSalute = false;
+$filteredItems = array_filter($weights,"weigh_up");
+var_dump($filteredItems);
+
+$alpha = false;
+$response = [];
+foreach($filteredItems as $key => $weight){
+    $item = $items->{$key};
+    if(!$alpha && $weight>0.5){
+        $alpha=true;
+    }
+    //var_dump($weight);
+    //var_dump($key);
+    switch($item->type)
+    {
+        case 'inclusive': 
+            if(count($filteredItems)>1)
+            {
+                echo '<br> '.$items->{$key}->response_multiple;
+            }
+            else{
+                echo '<br> '.$items->{$key}->response_single;
+            }
+            
+        break;
+        case 'inclusive_silent':
+            if(count($filteredItems)===1){
+                echo '<br> '.$items->{$key}->response_single;
+            }
+            break;
+        case 'exclusive':
+            echo '<br> '.$items->{$key}->response_single;
+            die();
+        break;
+        case 'helper':
+            if(count($filteredItems)===1){
+                echo '<br> '.$items->{$key}->response_single;
+            }
+            break;
+
+    }
+    
+}
+
+
+
+
 //var_dump($nb);
 //var_dump($nb);
 
